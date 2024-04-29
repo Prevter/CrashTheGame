@@ -19,9 +19,9 @@ typedef NTSTATUS(NTAPI *pdef_RtlAdjustPrivilege)(ULONG Privilege, BOOLEAN Enable
 #endif
 
 #ifdef GEODE_IS_WINDOWS
-#define BREAKPOINT __debugbreak()
+#define BRKPNT __debugbreak()
 #else
-#define BREAKPOINT __builtin_trap()
+#define BRKPNT __builtin_trap()
 #endif
 
 namespace CrashEngine {
@@ -94,7 +94,7 @@ namespace CrashEngine {
         }
 
         void breakpoint() {
-            BREAKPOINT;
+            BRKPNT;
         }
 
         void doubleFree() {
@@ -109,7 +109,7 @@ namespace CrashEngine {
         void threadCrash() {
             auto t = std::thread([] {
                 geode::log::debug("Thread started");
-                BREAKPOINT;
+                BRKPNT;
                 geode::log::debug("Thread ended");
             });
             // Set thread name
