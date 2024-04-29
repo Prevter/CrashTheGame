@@ -88,7 +88,11 @@ namespace CrashEngine {
         }
 
         void breakpoint() {
+#ifdef GEODE_IS_WINDOWS
             __debugbreak();
+#else
+            __builtin_trap();
+#endif
         }
 
         void doubleFree() {
