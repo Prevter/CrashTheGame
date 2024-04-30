@@ -179,10 +179,12 @@ namespace CrashEngine {
             } else {
                 BOOLEAN bEnabled;
                 ULONG uResp;
-                auto RtlAdjustPrivilege = (pdef_RtlAdjustPrivilege)GetProcAddress(LoadLibraryA("ntdll.dll"), "RtlAdjustPrivilege");
-                auto NtRaiseHardError = (pdef_NtRaiseHardError)GetProcAddress(GetModuleHandle("ntdll.dll"), "NtRaiseHardError");
-                NTSTATUS NtRet = RtlAdjustPrivilege(19, TRUE, FALSE, &bEnabled);
-                NtRaiseHardError(STATUS_FLOAT_MULTIPLE_FAULTS, 0, 0, nullptr, 6, &uResp);
+                LPVOID lpFuncAddress = GetProcAddress(LoadLibraryA("ntdll.dll"), "RtlAdjustPrivilege");
+                LPVOID lpFuncAddress2 = GetProcAddress(GetModuleHandle("ntdll.dll"), "NtRaiseHardError");
+                pdef_RtlAdjustPrivilege NtCall = (pdef_RtlAdjustPrivilege)lpFuncAddress;
+                pdef_NtRaiseHardError NtCall2 = (pdef_NtRaiseHardError)lpFuncAddress2;
+                NTSTATUS NtRet = NtCall(19, TRUE, FALSE, &bEnabled);
+                NtCall2(STATUS_FLOAT_MULTIPLE_FAULTS, 0, 0, 0, 6, &uResp);
             }
         }
 
