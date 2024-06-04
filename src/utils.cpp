@@ -12,4 +12,9 @@ namespace util {
         return dist(getRng());
     }
 
+    uintptr_t randPtr(uintptr_t min, uintptr_t max) {
+        std::uniform_int_distribution<uintptr_t> dist(min, max);
+        return dist(getRng());
+    }
+
 }

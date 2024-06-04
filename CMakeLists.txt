@@ -4,7 +4,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_OSX_ARCHITECTURES "x86_64")
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-project(CrashTheGame VERSION 1.0.0)
+set(CMAKE_ASM_NASM_COMPILER nasm)
+set(CMAKE_ASM_NASM_FLAGS "")
+set(CMAKE_ASM_NASM_COMPILE_OBJECT "<CMAKE_ASM_NASM_COMPILER> -f win64 -o <OBJECT> <SOURCE>")
+
+project(CrashTheGame VERSION 1.0.0 LANGUAGES CXX ASM_NASM)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 # Enable C++ exceptions for Clang-cl
@@ -18,6 +22,12 @@ add_library(${PROJECT_NAME} SHARED
     src/CrashEngine.cpp src/CrashEngine.hpp
     src/CrashPickerLayer.cpp src/CrashPickerLayer.hpp
 )
+
+# on 64 bit windows, include "Win64Utils.asm"
+if (WIN32 AND CMAKE_SIZEOF_VOID_P EQUAL 8)
+    target_sources(${PROJECT_NAME} PRIVATE src/Win64Utils.asm)
+    set_source_files_properties(src/Win64Utils.asm PROPERTIES LANGUAGE ASM_NASM)
+endif()
 
 if (NOT DEFINED ENV{GEODE_SDK})
     message(FATAL_ERROR "Unable to find Geode SDK! Please define GEODE_SDK environment variable to point to Geode")

@@ -24,6 +24,15 @@ typedef NTSTATUS(NTAPI *pdef_RtlAdjustPrivilege)(ULONG Privilege, BOOLEAN Enable
 #define BRKPNT __builtin_trap()
 #endif
 
+
+#ifdef GEODE_IS_WINDOWS64
+// declare extern functions, which are defined in Win64Utils.asm
+extern "C" {
+    void corruptTheStack();
+    void jumpToPointer(uintptr_t pointer);
+}
+#endif
+
 namespace CrashEngine {
 
 #define TRIGGER_CASE(type, func) case CrashType::type: func(); break
@@ -161,6 +170,7 @@ namespace CrashEngine {
 #ifdef GEODE_IS_WINDOWS
 
         void stackCorruption() {
+#ifdef GEODE_IS_WINDOWS32
             __asm {
                 // Pop some registers from stack
                 pop eax
@@ -171,6 +181,9 @@ namespace CrashEngine {
                 pop edi
                 pop ebp
             }
+#else
+            corruptTheStack();
+#endif
         }
 
         void bsod() {
@@ -195,8 +208,9 @@ namespace CrashEngine {
             auto base = reinterpret_cast<uintptr_t>(moduleInfo.lpBaseOfDll);
             auto size = static_cast<uintptr_t>(moduleInfo.SizeOfImage);
 
-            auto random = util::randInt(base, base + size);
-            __asm { jmp random }
+            auto random = util::randPtr(base, base + size);
+            GEODE_WINDOWS32(__asm { jmp random })
+            GEODE_WINDOWS64(jumpToPointer(random);)
         }
 
 #endif

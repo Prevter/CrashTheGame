@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Geode/Geode.hpp>
+
 namespace CrashEngine {
 
     enum class CrashType {
