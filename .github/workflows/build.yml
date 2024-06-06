@@ -34,7 +34,7 @@ jobs:
 
       - name: Install NASM
         uses: ilammy/setup-nasm@v1
-        if: matrix.config.name == "Windows"
+        if: matrix.config.name == 'Windows'
 
       - name: Build the mod
         uses: geode-sdk/build-geode-mod@main
