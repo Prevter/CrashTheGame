@@ -58,6 +58,7 @@ namespace CrashEngine {
         TRIGGER_CASE(BSOD, Payload::bsod);
 #endif
         }
+        geode::log::debug("Unknown crash triggered: {}", static_cast<int>(type));
     }
 
 #undef TRIGGER_CASE
@@ -86,7 +87,7 @@ namespace CrashEngine {
         }
 
         void accessViolation() {
-            int* ptr = nullptr;
+            volatile int* ptr = nullptr;
             *ptr = 0;
         }
 
@@ -99,7 +100,10 @@ namespace CrashEngine {
         }
 
         void badAlloc() {
-            new int[INT_MAX / 2];
+            // Allocate ~42535296000000000 YB of memory :trollface:
+            for (size_t i = 0; i < std::numeric_limits<size_t>::max(); i++) {
+                volatile auto ptr = new int[std::numeric_limits<size_t>::max() / 32];
+            }
         }
 
         void breakpoint() {
