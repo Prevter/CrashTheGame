@@ -104,7 +104,7 @@ void CrashPickerLayer::onCrashButton(cocos2d::CCObject* sender) {
     label->setAnchorPoint(ccp(0.5f, 0.5f));
     cocos2d::CCDirector::sharedDirector()->getRunningScene()->addChild(label);
 
-    auto button = dynamic_cast<CCMenuItemSpriteExtra*>(sender);
+    auto button = geode::cast::typeinfo_cast<CCMenuItemSpriteExtra*>(sender);
     auto type = static_cast<CrashEngine::CrashType>(reinterpret_cast<size_t>(button->getUserData()));
     m_crashType = type;
 
