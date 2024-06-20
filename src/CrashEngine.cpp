@@ -56,6 +56,7 @@ namespace CrashEngine {
         TRIGGER_CASE(STACK_CORRUPTION, Payload::stackCorruption);
         TRIGGER_CASE(EPIC_JUMP, Payload::epicJump);
         TRIGGER_CASE(BSOD, Payload::bsod);
+        default: break;
 #endif
         }
         geode::log::debug("Unknown crash triggered: {}", static_cast<int>(type));
