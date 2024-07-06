@@ -20,8 +20,10 @@ typedef NTSTATUS(NTAPI *pdef_RtlAdjustPrivilege)(ULONG Privilege, BOOLEAN Enable
 
 #ifdef GEODE_IS_WINDOWS
 #define BRKPNT __debugbreak()
+#define NO_INLINE __declspec(noinline)
 #else
 #define BRKPNT __builtin_trap()
+#define NO_INLINE __attribute__((noinline))
 #endif
 
 
@@ -37,7 +39,7 @@ namespace CrashEngine {
 
 #define TRIGGER_CASE(type, func) case CrashType::type: func(); break
 
-    void trigger(CrashType type) {
+    void NO_INLINE trigger(CrashType type) {
         switch (type) {
         TRIGGER_CASE(EXCEPTION, Payload::except);
         TRIGGER_CASE(B00B1E5, Payload::boobies);
@@ -65,15 +67,15 @@ namespace CrashEngine {
 #undef TRIGGER_CASE
 
     namespace Payload {
-        void except() {
+        void NO_INLINE except() {
             throw std::runtime_error("Have a nice day!");
         }
 
-        void boobies() {
+        void NO_INLINE boobies() {
             (*(void (*)(void))0xB00B1E5)();
         }
 
-        void stackOverflow() {
+        void NO_INLINE stackOverflow() {
             int megaStack[0x10000000];
             for (int i = 0; i < 0x10000000; i++) {
                 megaStack[i] = i;
@@ -81,18 +83,18 @@ namespace CrashEngine {
             geode::log::debug("Huh? How did we get here? {}", megaStack[152125]);
         }
 
-        void deadlock() {
+        void NO_INLINE deadlock() {
             std::mutex mutex;
             mutex.lock();
             mutex.lock();
         }
 
-        void accessViolation() {
+        void NO_INLINE accessViolation() {
             volatile int* ptr = nullptr;
             *ptr = 0;
         }
 
-        void cocos2dTexture() {
+        void NO_INLINE cocos2dTexture() {
             auto something = CCMenuItemSpriteExtra::create(
                     cocos2d::CCSprite::createWithSpriteFrameName("I don't even know what I'm doing.png"),
                     nullptr, nullptr
@@ -100,18 +102,18 @@ namespace CrashEngine {
             something->setPosition(0, 0);
         }
 
-        void badAlloc() {
+        void NO_INLINE badAlloc() {
             // Allocate ~42535296000000000 YB of memory :trollface:
             for (size_t i = 0; i < std::numeric_limits<size_t>::max(); i++) {
                 volatile auto ptr = new int[std::numeric_limits<size_t>::max() / 32];
             }
         }
 
-        void breakpoint() {
+        void NO_INLINE breakpoint() {
             BRKPNT;
         }
 
-        void doubleFree() {
+        void NO_INLINE doubleFree() {
             // Simplified version of https://stackoverflow.com/questions/60248976/c-double-free-or-corruptionout
             std::vector<int> vals = { 1, 2, 3, 4, 5, 6 };
             auto it = vals.begin();
@@ -120,7 +122,7 @@ namespace CrashEngine {
             vals.insert(it, 200);
         }
 
-        void threadCrash() {
+        void NO_INLINE threadCrash() {
             auto t = std::thread([] {
                 geode::log::debug("Thread started");
                 BRKPNT;
@@ -131,7 +133,7 @@ namespace CrashEngine {
             t.detach();
         }
 
-        void gpuCrash() {
+        void NO_INLINE gpuCrash() {
             // Got this from https://stackoverflow.com/questions/64828827/whenever-i-run-my-opengl-code-i-get-a-white-screen-and-a-crash
             // But cut out the unnecessary stuff
             unsigned int VAO4, VBO4, EBO4;
@@ -158,13 +160,13 @@ namespace CrashEngine {
             glEnableVertexAttribArray(2);
         }
 
-        void memoryOverflow() {
+        void NO_INLINE memoryOverflow() {
             while (true) {
                 malloc(0x1000);
             }
         }
 
-        void divideByZero() {
+        void NO_INLINE divideByZero() {
             // Compilers love to optimize this out
             volatile int a = 1;
             volatile int b = 0;
@@ -174,7 +176,7 @@ namespace CrashEngine {
 
 #ifdef GEODE_IS_WINDOWS
 
-        void stackCorruption() {
+        void NO_INLINE stackCorruption() {
 #ifdef GEODE_IS_WINDOWS32
             __asm {
                 // Pop some registers from stack
@@ -191,7 +193,7 @@ namespace CrashEngine {
 #endif
         }
 
-        void bsod() {
+        void NO_INLINE bsod() {
             if (isWine()) {
                 system("cmd /c start /unix echo c > /proc/sysrq-trigger");
             } else {
@@ -206,7 +208,7 @@ namespace CrashEngine {
             }
         }
 
-        void epicJump() {
+        void NO_INLINE epicJump() {
             auto module = GetModuleHandle(nullptr);
             MODULEINFO moduleInfo;
             GetModuleInformation(GetCurrentProcess(), module, &moduleInfo, sizeof(moduleInfo));

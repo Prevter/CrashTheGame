@@ -13,6 +13,6 @@ corruptTheStack:
     ret
 
 jumpToPointer:
-    mov rax, rdi
+    mov rax, rcx
     jmp rax
 

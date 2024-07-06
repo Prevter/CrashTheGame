@@ -95,24 +95,23 @@ bool CrashPickerLayer::setup(const std::string& title) {
     return true;
 }
 
-void CrashPickerLayer::onCrashButton(cocos2d::CCObject* sender) {
+void CrashPickerLayer::onCrashButton(CCObject* sender) {
     const char* message = SCARY_MESSAGES[util::randInt(0, SCARY_MESSAGES_SIZE - 1)];
-    auto label = cocos2d::CCLabelBMFont::create(message, getRandomFont());
-    auto winSize = cocos2d::CCDirector::sharedDirector()->getWinSize();
+    auto label = CCLabelBMFont::create(message, getRandomFont());
+    auto winSize = CCDirector::get()->getWinSize();
     label->setPosition(winSize.width / 2, winSize.height / 2);
     label->setScale(2.5f);
     label->setAnchorPoint(ccp(0.5f, 0.5f));
-    cocos2d::CCDirector::sharedDirector()->getRunningScene()->addChild(label);
+    CCScene::get()->addChild(label);
 
-    auto button = geode::cast::typeinfo_cast<CCMenuItemSpriteExtra*>(sender);
-    auto type = static_cast<CrashEngine::CrashType>(reinterpret_cast<size_t>(button->getUserData()));
+    auto button = typeinfo_cast<CCMenuItemSpriteExtra*>(sender);
+    auto userData = reinterpret_cast<size_t>(button->getUserData());
+    auto type = static_cast<CrashEngine::CrashType>(userData);
     m_crashType = type;
 
-    cocos2d::CCDirector::sharedDirector()->getScheduler()->scheduleSelector(
-            schedule_selector(CrashPickerLayer::crashTriggered), this, 0.0f, 0, 0.0f, false
-    );
+    this->scheduleOnce(schedule_selector(CrashPickerLayer::crashTriggered), 0.f);
 }
 
-void CrashPickerLayer::crashTriggered(float x) {
+void CrashPickerLayer::crashTriggered(float) {
     CrashEngine::trigger(m_crashType);
 }
