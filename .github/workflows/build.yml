@@ -57,3 +57,11 @@ jobs:
         with:
           name: Build Output
           path: ${{ steps.build.outputs.build-output }}
+
+      - name: Upload release to Discord
+        uses: tsickert/discord-webhook@v5.3.0
+        if: secrets.NIGHTLY_WEBHOOK
+        with:
+          webhook-url: ${{ secrets.NIGHTLY_WEBHOOK }}
+          filename: ${{ steps.build.outputs.build-output }}
+          content: "Nightly build for commit [${{ github.sha }}](https://github.com/EclipseMenu/EclipseMenu/commit/${{ github.sha }})"
