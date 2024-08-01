@@ -66,5 +66,5 @@ jobs:
         if: ${{ steps.check.outputs.has-nightly-webhook == 'true' }}
         with:
           webhook-url: ${{ secrets.NIGHTLY_WEBHOOK }}
-          filename: ${{ steps.build.outputs.build-output }}
+          filename: ${{ steps.build.outputs.build-output }}/prevter.crashthegame.geode
           content: "Nightly build for commit [${{ github.sha }}](https://github.com/EclipseMenu/EclipseMenu/commit/${{ github.sha }})"
