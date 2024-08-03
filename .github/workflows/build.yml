@@ -62,9 +62,14 @@ jobs:
         run: echo "::set-output name=has-nightly-webhook::${{ secrets.NIGHTLY_WEBHOOK != '' }}"
 
       - name: Upload release to Discord
-        uses: tsickert/discord-webhook@v5.3.0
+        uses: prevter/discord-webhook@main
         if: ${{ steps.check.outputs.has-nightly-webhook == 'true' }}
         with:
           webhook-url: ${{ secrets.NIGHTLY_WEBHOOK }}
-          filename: ${{ steps.build.outputs.build-output }}/prevter.crashthegame.geode
-          content: "Nightly build for commit [${{ github.sha }}](https://github.com/EclipseMenu/EclipseMenu/commit/${{ github.sha }})"
+          files: ${{ steps.build.outputs.build-output }}/*.geode
+          embed-title: ${{ github.event.head_commit.message.split('\n')[0] }}
+          embed-description: ${{ github.event.head_commit.message }}
+          embed-color: ${{ github.sha }}
+          embed-author-name: ${{ github.actor }}
+          embed-author-icon: ${{ github.event.sender.avatar_url }}
+          embed-timestamp: 'now'
