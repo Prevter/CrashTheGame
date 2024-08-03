@@ -68,8 +68,9 @@ jobs:
         id: commit
         if: ${{ steps.check.outputs.has-nightly-webhook == 'true' }}
         run: |
+          export COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
           echo "commit-message=$(git log -1 --pretty=format:"%s" | head -n 1)" >> $GITHUB_OUTPUT
-          echo "commit-message-full=$(echo "${{ github.event.head_commit.message }}" | tail -n +2)" >> $GITHUB_OUTPUT
+          echo "commit-message-full=$(echo $COMMIT_MESSAGE | tail -n +2)" >> $GITHUB_OUTPUT
           echo "build-color=#$(git log -1 --pretty=format:"%h" | cut -c 1-6)" >> $GITHUB_OUTPUT
 
       - name: Upload release to Discord
