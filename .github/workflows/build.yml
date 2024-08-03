@@ -81,8 +81,8 @@ jobs:
           embed-title: ${{ steps.commit.outputs.commit-message }}
           embed-description: ${{ steps.commit.outputs.commit-message-full }}
           embed-color: ${{ steps.commit.outputs.build-color }}
-          embed-author-name: ${{ github.actor }}
           embed-url: ${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}
-          embed-author-icon: ${{ github.event.sender.avatar_url }}
+          embed-author: ${{ github.actor }}
+          embed-author-icon: 'https://avatars.githubusercontent.com/u/${{ github.actor_id }}?v=4'
           embed-timestamp: 'now'
           debug-print: true
