@@ -61,15 +61,22 @@ jobs:
         id: check
         run: echo "::set-output name=has-nightly-webhook::${{ secrets.NIGHTLY_WEBHOOK != '' }}"
 
+      - name: Get commit messages
+        id: commit
+        run: |
+          echo "::set-output name=commit-message::$(git log -1 --pretty=format:"%s")"
+          echo "::set-output name=commit-message-full::$(git log -1 --pretty=format:"%B")"
+
       - name: Upload release to Discord
         uses: prevter/discord-webhook@main
         if: ${{ steps.check.outputs.has-nightly-webhook == 'true' }}
         with:
           webhook-url: ${{ secrets.NIGHTLY_WEBHOOK }}
           files: ${{ steps.build.outputs.build-output }}/*.geode
-          embed-title: ${{ github.event.head_commit.message.split('\n')[0] }}
-          embed-description: ${{ github.event.head_commit.message }}
+          embed-title: ${{ steps.commit.outputs.commit-message }}
+          embed-description: ${{ steps.commit.outputs.commit-message-full }}
           embed-color: ${{ github.sha }}
           embed-author-name: ${{ github.actor }}
+          embed-url: ${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}
           embed-author-icon: ${{ github.event.sender.avatar_url }}
           embed-timestamp: 'now'
