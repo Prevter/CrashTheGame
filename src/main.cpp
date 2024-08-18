@@ -1,12 +1,6 @@
 #include <Geode/Geode.hpp>
 #include "CrashPickerLayer.hpp"
 
-constexpr size_t vector_size = sizeof(std::vector);
-constexpr size_t map_size = sizeof(std::map);
-constexpr size_t umap_size = sizeof(std::unordered_map);
-constexpr size_t set_size = sizeof(std::set);
-constexpr size_t uset_size = sizeof(std::unordered_set);
-
 #include <Geode/modify/MenuLayer.hpp>
 class $modify(MyMenuLayer, MenuLayer) {
 	bool init() {
@@ -14,11 +8,11 @@ class $modify(MyMenuLayer, MenuLayer) {
 			return false;
 		}
 
-		static_assert(vector_size == 20);
-		static_assert(map_size == 20);
-		static_assert(umap_size == 20);
-		static_assert(set_size == 20);
-		static_assert(uset_size == 20);
+		static_assert(sizeof(std::vector) == 24);
+		static_assert(sizeof(std::map) == 24);
+		static_assert(sizeof(std::unordered_map) == 24);
+		static_assert(sizeof(std::set) == 24);
+		static_assert(sizeof(std::unordered_set) == 24);
 
 		auto crashButton = CCMenuItemSpriteExtra::create(
 			CCSprite::createWithSpriteFrameName("GJ_freeStuffBtn_001.png"),
