@@ -10,9 +10,9 @@ class $modify(MyMenuLayer, MenuLayer) {
 
 		static_assert(sizeof(std::vector<int>) == 24);
 		static_assert(sizeof(std::map<int, int>) == 24);
-		static_assert(sizeof(std::unordered_map<int, int>) == 24);
+		static_assert(sizeof(std::unordered_map<int, int>) == 40);
 		static_assert(sizeof(std::set<int>) == 24);
-		static_assert(sizeof(std::unordered_set<int>) == 24);
+		static_assert(sizeof(std::unordered_set<int>) == 40);
 
 		auto crashButton = CCMenuItemSpriteExtra::create(
 			CCSprite::createWithSpriteFrameName("GJ_freeStuffBtn_001.png"),
