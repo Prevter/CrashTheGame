@@ -109,9 +109,7 @@ void CrashPickerLayer::onCrashButton(CCObject* sender) {
     auto type = static_cast<CrashEngine::CrashType>(userData);
     m_crashType = type;
 
-    this->scheduleOnce(schedule_selector(CrashPickerLayer::crashTriggered), 0.f);
-}
-
-void CrashPickerLayer::crashTriggered(float) {
-    CrashEngine::trigger(m_crashType);
+    geode::queueInMainThread([this]{
+        CrashEngine::trigger(m_crashType);
+    });
 }

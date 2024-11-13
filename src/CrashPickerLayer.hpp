@@ -17,9 +17,6 @@ public:
     /// @brief Called when a crash button is pressed.
 	void onCrashButton(cocos2d::CCObject* sender);
 
-    /// @brief Called the frame after a crash button is pressed (triggers the payload).
-	void crashTriggered(float x);
-
 private:
     /// @brief Selected crash type.
     CrashEngine::CrashType m_crashType;
