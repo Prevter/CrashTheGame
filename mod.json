@@ -1,14 +1,18 @@
 {
-	"geode": "3.4.0",
+	"geode": "4.0.0-alpha.1",
 	"gd": {
-		"win": "2.206",
-		"android": "2.206",
-		"mac": "2.206",
-		"ios": "2.206"
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
 	},
-	"version": "v1.1.4",
+	"version": "v1.1.5-beta.1",
 	"id": "prevter.crashthegame",
 	"name": "CrashTheGame",
 	"developer": "Prevter",
-	"description": "Collection of epic game crashes, accessible by a click of a button"
+	"description": "Collection of epic game crashes, accessible by a click of a button",
+	"tags": ["joke","interface","developer"],
+	"links": {
+		"source": "https://github.com/Prevter/CrashTheGame"
+	}
 }
