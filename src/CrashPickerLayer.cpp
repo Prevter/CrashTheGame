@@ -95,6 +95,15 @@ bool CrashPickerLayer::setup(const std::string& title) {
     return true;
 }
 
+// let one frame render
+void doubleQueue(std::function<void()> func) {
+    geode::queueInMainThread([func]{
+        geode::queueInMainThread([func]{
+            func();
+        });
+    });
+}
+
 void CrashPickerLayer::onCrashButton(CCObject* sender) {
     const char* message = SCARY_MESSAGES[util::randInt(0, SCARY_MESSAGES_SIZE - 1)];
     auto label = CCLabelBMFont::create(message, getRandomFont());
@@ -109,7 +118,7 @@ void CrashPickerLayer::onCrashButton(CCObject* sender) {
     auto type = static_cast<CrashEngine::CrashType>(userData);
     m_crashType = type;
 
-    geode::queueInMainThread([this]{
+    doubleQueue([this]{
         CrashEngine::trigger(m_crashType);
     });
 }
